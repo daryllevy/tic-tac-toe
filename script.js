@@ -50,3 +50,62 @@ function columnCell() {
 
   return { setValue, getValue };
 }
+
+// Fonction pour déterminer le gagnant
+function winner(board, player) {
+  // Combinaisons de chemins gagnant
+  const winningPaths = [
+    [
+      [0, 0],
+      [0, 1],
+      [0, 2],
+    ],
+    [
+      [1, 0],
+      [1, 1],
+      [1, 2],
+    ],
+    [
+      [2, 0],
+      [2, 1],
+      [2, 2],
+    ],
+    [
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ],
+    [
+      [0, 0],
+      [1, 1],
+      [2, 2],
+    ],
+    [
+      [0, 1],
+      [1, 1],
+      [2, 1],
+    ],
+    [
+      [0, 2],
+      [1, 2],
+      [2, 2],
+    ],
+    [
+      [0, 2],
+      [1, 1],
+      [2, 1],
+    ],
+  ];
+
+  // Si il ya une combinaison gagnante
+  // Si il y a une row dont tous les chemins sont identiques
+  return winningPaths.some((row) => {
+    return row.every((path) => {
+      let r = path[0];
+      let c = path[1];
+      let cell = board[r][c];
+
+      return cell.getValue() === player.marker;
+    });
+  });
+}
