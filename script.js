@@ -2,7 +2,6 @@
 
 // <-- Etapes pour créer mon Tic Tac Toe : -->
 
-// 4. Je vérifie si le jeu est terminé
 // 5. Je vérifie si on a un gagnant ou un match nul
 
 // 1. Je crée la grille
@@ -18,6 +17,7 @@ const gameBoard = (() => {
       board[i].push(cell());
     }
   }
+  console.log(board);
 
   const getBoard = () => board;
 
@@ -31,8 +31,14 @@ const gameBoard = (() => {
     board[row][col].setValue(player.marker);
   };
 
-  console.log(board);
-  return { getBoard, placeMarker };
+  // 4. Je vérifie si le jeu est terminé
+  const isGameOver = () => {
+    return board.every((row) => {
+      return row.every((col) => col.getValue() != 0);
+    });
+  };
+
+  return { getBoard, placeMarker, isGameOver };
 })();
 
 // 2. Je créer les joueurs
@@ -45,6 +51,9 @@ const player = (marker) => {
 
   return { marker, getScore, addScore };
 };
+
+// Objet qui controle le flux du jeu
+const game = () => {};
 
 // Fonction pour créer une cellule
 function cell() {
