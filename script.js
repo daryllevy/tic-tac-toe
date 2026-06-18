@@ -38,7 +38,62 @@ const gameBoard = (() => {
     });
   };
 
-  return { getBoard, placeMarker, isGameOver };
+  // Fonction pour déterminer si il y a un gagnant
+  const isWinner = (player) => {
+    // Les combinaisons gagnantes possibles
+    const winningCombinaisons = [
+      [
+        [0, 0],
+        [0, 1],
+        [0, 2],
+      ],
+      [
+        [1, 0],
+        [1, 1],
+        [1, 2],
+      ],
+      [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+      ],
+      [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+      ],
+      [
+        [0, 1],
+        [1, 1],
+        [2, 1],
+      ],
+      [
+        [0, 2],
+        [1, 2],
+        [2, 2],
+      ],
+      [
+        [0, 0],
+        [1, 1],
+        [2, 2],
+      ],
+      [
+        [0, 2],
+        [1, 1],
+        [2, 0],
+      ],
+    ];
+
+    return winningCombinaisons.some((row) =>
+      row.every((col) => {
+        const row = col[0];
+        const column = col[1];
+        return board[row][column].getValue() === player.marker;
+      }),
+    );
+  };
+
+  return { getBoard, placeMarker, isGameOver, isWinner };
 })();
 
 // 2. Je créer les joueurs
@@ -53,7 +108,21 @@ const player = (marker) => {
 };
 
 // Objet qui controle le flux du jeu
-const game = () => {};
+const game = (board) => {
+  let nberOfMarkers = 0;
+
+  board.forEach((row) =>
+    row.forEach((col) => {
+      if (col.getValue() != 0) {
+        nberOfMarkers++;
+        console.log(nberOfMarkers);
+      }
+    }),
+  );
+
+  if (nberOfMarkers >= 5) {
+  }
+};
 
 // Fonction pour créer une cellule
 function cell() {
