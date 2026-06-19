@@ -2,7 +2,7 @@
 
 // <-- Etapes pour créer mon Tic Tac Toe : -->
 
-// 5. Je vérifie si on a un gagnant ou un match nul
+// 7. écrire la logique qui permet au joueur de mettre leur marker sur une case de la grille
 
 // 1. Je crée la grille
 // Mon objet qui crée la grille
@@ -108,7 +108,7 @@ const player = (marker) => {
 };
 
 // Objet qui controle le flux du jeu
-const game = (board) => {
+const game = (board, player) => {
   let nberOfMarkers = 0;
 
   board.forEach((row) =>
@@ -121,8 +121,45 @@ const game = (board) => {
   );
 
   if (nberOfMarkers >= 5) {
+    if (gameBoard.isWinner(player)) {
+      console.log(`Nous avons un gagnant, le joueur ${player.marker} a gagné`);
+    }
+  }
+
+  if (gameBoard.isGameOver()) {
+    console.log("C'est une égalité");
   }
 };
+
+// 6. créer l'objet qui affiche la grille
+const displayGame = () => {
+  const container = document.querySelector(".container");
+
+  const displayBoard = (board) => {
+    const visualBoard = board
+      .map(
+        (row) =>
+          `
+    <div class="row">
+      ${row
+        .map(
+          (col) => `
+        <div class="col">${col.getValue()}</div>
+        `,
+        )
+        .join("")}
+    </div>
+    `,
+      )
+      .join("");
+
+    container.insertAdjacentHTML("beforeend", visualBoard);
+  };
+
+  return { displayBoard };
+};
+
+displayGame().displayBoard(gameBoard.getBoard());
 
 // Fonction pour créer une cellule
 function cell() {
