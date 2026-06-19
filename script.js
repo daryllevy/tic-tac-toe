@@ -133,7 +133,7 @@ const game = (board, player) => {
 
 // 6. créer l'objet qui affiche la grille
 const displayGame = () => {
-  const container = document.querySelector(".container");
+  const boardContainer = document.querySelector(".board");
 
   const displayBoard = (board) => {
     const visualBoard = board
@@ -153,7 +153,7 @@ const displayGame = () => {
       )
       .join("");
 
-    container.insertAdjacentHTML("beforeend", visualBoard);
+    boardContainer.insertAdjacentHTML("beforeend", visualBoard);
   };
 
   return { displayBoard };
