@@ -2,7 +2,11 @@
 
 // <-- Etapes pour créer mon Tic Tac Toe : -->
 
-// 7. écrire la logique qui permet au joueur de mettre leur marker sur une case de la grille
+//** */ 7. écrire la logique qui permet au joueur de mettre leur marker sur une case de la grille
+// 8. Retenir les scores
+// 9. créer les boutons start et restart
+
+const boardContainer = document.querySelector(".board");
 
 // 1. Je crée la grille
 // Mon objet qui crée la grille
@@ -25,10 +29,11 @@ const gameBoard = (() => {
   const placeMarker = (player, row, col) => {
     if (board[row][col].getValue() != 0) {
       console.log("Case déjà occupé");
-      return;
+      return false;
     }
 
     board[row][col].setValue(player.marker);
+    return true;
   };
 
   // 4. Je vérifie si le jeu est terminé
@@ -107,9 +112,13 @@ const player = (marker) => {
   return { marker, getScore, addScore };
 };
 
+const j1 = player("X");
+
 // Objet qui controle le flux du jeu
 const game = (board, player) => {
   let nberOfMarkers = 0;
+  let row = 0;
+  let column = 0;
 
   board.forEach((row) =>
     row.forEach((col) => {
@@ -129,26 +138,41 @@ const game = (board, player) => {
   if (gameBoard.isGameOver()) {
     console.log("C'est une égalité");
   }
+
+  boardContainer.addEventListener("click", (e) => {
+    let target = e.target;
+
+    if (target.classList == "row" || target.classList == "col") {
+      row = target.dataset.row;
+      column = target.dataset.col;
+      gameBoard.placeMarker(player, row, column);
+      displayGame().hideBoard();
+      displayGame().displayBoard(gameBoard.getBoard());
+      console.log(`row ${row}, col ${column}`);
+    }
+  });
 };
 
 // 6. créer l'objet qui affiche la grille
 const displayGame = () => {
-  const boardContainer = document.querySelector(".board");
-
   const displayBoard = (board) => {
     const visualBoard = board
       .map(
-        (row) =>
+        (row, indexRow) =>
           `
     <div class="row">
       ${row
         .map(
-          (col) => `
-        <div class="col">${col.getValue()}</div>
+          (col, indexCol) => `
+        <div class="col" data-row="${indexRow}" data-col="${indexCol}">${col.getValue()}</div>
+        
         `,
         )
         .join("")}
+         
+      
     </div>
+    
     `,
       )
       .join("");
@@ -156,7 +180,11 @@ const displayGame = () => {
     boardContainer.insertAdjacentHTML("beforeend", visualBoard);
   };
 
-  return { displayBoard };
+  const hideBoard = () => {
+    boardContainer.innerHTML = "";
+  };
+
+  return { displayBoard, hideBoard };
 };
 
 displayGame().displayBoard(gameBoard.getBoard());
