@@ -30,3 +30,27 @@
   border: 1px solid black;
   width: calc(100% / 3);
 }
+
+.selection {
+  display: flex;
+  gap: 250px;
+  justify-content: center;
+  margin-bottom: 24px;
+  background-color: aqua;
+}
+
+.selection div {
+  display: flex;
+  gap: 24px;
+  border: 1px solid blue;
+  padding: 12px 18px;
+}
+
+.selection div:hover {
+  cursor: pointer;
+}
+
+.message {
+  text-align: center;
+  margin-bottom: 24px;
+}
