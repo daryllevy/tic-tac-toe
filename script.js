@@ -2,13 +2,15 @@
 
 // <-- Etapes pour créer mon Tic Tac Toe : -->
 
-//** */ 7. écrire la logique qui permet au joueur de mettre leur marker sur une case de la grille
 // 8. Retenir les scores
 // 9. créer les boutons start et restart
 
 const boardContainer = document.querySelector(".board");
+const playerSelection = document.querySelector(".selection");
+const message = document.querySelector(".message");
+let row;
+let column;
 
-// 1. Je crée la grille
 // Mon objet qui crée la grille
 const gameBoard = (() => {
   const row = 3;
@@ -25,9 +27,9 @@ const gameBoard = (() => {
 
   const getBoard = () => board;
 
-  // 3. Je place les pions sur la grille
+  // Fonction qui place les pions sur la grille
   const placeMarker = (player, row, col) => {
-    if (board[row][col].getValue() != 0) {
+    if (board[row][col].getValue() != "") {
       console.log("Case déjà occupé");
       return false;
     }
@@ -36,10 +38,9 @@ const gameBoard = (() => {
     return true;
   };
 
-  // 4. Je vérifie si le jeu est terminé
   const isGameOver = () => {
     return board.every((row) => {
-      return row.every((col) => col.getValue() != 0);
+      return row.every((col) => col.getValue() != "");
     });
   };
 
@@ -101,8 +102,7 @@ const gameBoard = (() => {
   return { getBoard, placeMarker, isGameOver, isWinner };
 })();
 
-// 2. Je créer les joueurs
-// Mon objet qui crée les joueurs
+// Objet qui crée les joueurs
 const player = (marker) => {
   let score = 0;
 
@@ -112,51 +112,15 @@ const player = (marker) => {
   return { marker, getScore, addScore };
 };
 
-const j1 = player("X");
+let X = player("X");
+let O = player("0");
+let activePlayer;
 
-// Objet qui controle le flux du jeu
-const game = (board, player) => {
-  let nberOfMarkers = 0;
-  let row = 0;
-  let column = 0;
-
-  board.forEach((row) =>
-    row.forEach((col) => {
-      if (col.getValue() != 0) {
-        nberOfMarkers++;
-        console.log(nberOfMarkers);
-      }
-    }),
-  );
-
-  if (nberOfMarkers >= 5) {
-    if (gameBoard.isWinner(player)) {
-      console.log(`Nous avons un gagnant, le joueur ${player.marker} a gagné`);
-    }
-  }
-
-  if (gameBoard.isGameOver()) {
-    console.log("C'est une égalité");
-  }
-
-  boardContainer.addEventListener("click", (e) => {
-    let target = e.target;
-
-    if (target.classList == "row" || target.classList == "col") {
-      row = target.dataset.row;
-      column = target.dataset.col;
-      gameBoard.placeMarker(player, row, column);
-      displayGame().hideBoard();
-      displayGame().displayBoard(gameBoard.getBoard());
-      console.log(`row ${row}, col ${column}`);
-    }
-  });
-};
-
-// 6. créer l'objet qui affiche la grille
-const displayGame = () => {
-  const displayBoard = (board) => {
-    const visualBoard = board
+// Objet qui affiche la grille
+const displayGame = (() => {
+  const displayBoard = () => {
+    const visualBoard = gameBoard
+      .getBoard()
       .map(
         (row, indexRow) =>
           `
@@ -184,14 +148,72 @@ const displayGame = () => {
     boardContainer.innerHTML = "";
   };
 
-  return { displayBoard, hideBoard };
-};
+  // Evènement pour choisir son marker
+  playerSelection.addEventListener(
+    "click",
+    (e) => {
+      let target = e.target;
 
-displayGame().displayBoard(gameBoard.getBoard());
+      if (target.classList == "X" || target.classList == "O") {
+        target.classList == "X" ? (activePlayer = X) : (activePlayer = O);
+        // X.marker == "X" ? (O = player("O")) : (O = player("X"));
+      }
+      console.log(`marker selected = ${target.classList}`);
+    },
+    { once: true },
+  );
+
+  // Evènement pour placer un marker sur la grille
+  boardContainer.addEventListener("click", placeMarkerOnBoard);
+
+  return { displayBoard, hideBoard };
+})();
+displayGame.displayBoard(gameBoard.getBoard());
+
+// Objet qui controle le flux du jeu
+const gameFlow = () => {
+  let nberOfMarkers = 0;
+  let isGameWinner = false;
+
+  let markerPlaced = gameBoard.placeMarker(activePlayer, row, column);
+  displayGame.hideBoard();
+  displayGame.displayBoard(gameBoard.getBoard());
+
+  gameBoard.getBoard().forEach((row) =>
+    row.forEach((col) => {
+      if (col.getValue() != "") {
+        nberOfMarkers++;
+        console.log(nberOfMarkers);
+      }
+    }),
+  );
+
+  if (markerPlaced) {
+    if (nberOfMarkers >= 5) {
+      if (gameBoard.isWinner(activePlayer)) {
+        console.log(
+          `Nous avons un gagnant, le joueur ${activePlayer.marker} a gagné`,
+        );
+        message.textContent = `Game over`;
+        boardContainer.removeEventListener("click", placeMarkerOnBoard);
+        isGameWinner = true;
+      }
+    }
+
+    activePlayer == X ? (activePlayer = O) : (activePlayer = X);
+    if (!isGameWinner) message.textContent = `${activePlayer.marker}'s turn`;
+  }
+
+  if (gameBoard.isGameOver()) {
+    console.log("C'est une égalité");
+    message.textContent = `Game over`;
+    boardContainer.removeEventListener("click", placeMarkerOnBoard);
+  }
+};
 
 // Fonction pour créer une cellule
 function cell() {
-  let value = 0;
+  let value = "";
 
   const setValue = (val) => {
     value = val;
@@ -199,4 +221,15 @@ function cell() {
   const getValue = () => value;
 
   return { setValue, getValue };
+}
+
+function placeMarkerOnBoard(e) {
+  let target = e.target;
+
+  if (target.classList == "row" || target.classList == "col") {
+    row = target.dataset.row;
+    column = target.dataset.col;
+    if (typeof activePlayer == "undefined") return;
+    gameFlow();
+  }
 }
