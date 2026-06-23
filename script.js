@@ -8,6 +8,7 @@
 const boardContainer = document.querySelector(".board");
 const playerSelection = document.querySelector(".selection");
 const message = document.querySelector(".message");
+const span = document.querySelectorAll("span");
 let row;
 let column;
 
@@ -113,11 +114,11 @@ const player = (marker) => {
 };
 
 let X = player("X");
-let O = player("0");
+let O = player("O");
 let activePlayer;
 
 // Objet qui affiche la grille
-const displayGame = (() => {
+const displayGame = (() => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
   const displayBoard = () => {
     const visualBoard = gameBoard
       .getBoard()
@@ -197,6 +198,13 @@ const gameFlow = () => {
         message.textContent = `Game over`;
         boardContainer.removeEventListener("click", placeMarkerOnBoard);
         isGameWinner = true;
+        activePlayer.addScore();
+        console.log(activePlayer.getScore());
+        span.forEach((singleSpan) => {
+          if (singleSpan.classList.contains(activePlayer.marker)) {
+            singleSpan.textContent = activePlayer.getScore();
+          }
+        });
       }
     }
 
