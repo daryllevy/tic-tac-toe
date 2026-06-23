@@ -7,8 +7,9 @@
 #main {
   height: 100vh;
   display: flex;
-  align-items: center;
+  /* align-items: center; */
   justify-content: center;
+  font-family: sans-serif;
 }
 
 .container {
@@ -17,8 +18,10 @@
 }
 
 .board {
-  width: 100%;
+  width: 50%;
   height: 100%;
+  background-color: rgb(35, 212, 212);
+  margin: 0 auto;
 }
 
 .row {
@@ -27,8 +30,31 @@
 }
 
 .col {
-  border: 1px solid black;
+  border: 3px solid rgba(43, 43, 37, 0.171);
   width: calc(100% / 3);
+  font-size: 100px;
+  text-align: center;
+}
+
+.board .row:first-of-type .col {
+  border-top: none;
+}
+
+.board .row .col:first-child {
+  border-left: none;
+}
+
+.board .row .col:last-child {
+  border-right: none;
+}
+
+.board .row:last-child .col {
+  border-bottom: none;
+}
+
+.board-message {
+  text-align: center;
+  font-size: 30px;
 }
 
 .selection {
@@ -36,13 +62,11 @@
   gap: 250px;
   justify-content: center;
   margin-bottom: 24px;
-  background-color: aqua;
 }
 
 .selection div {
   display: flex;
   gap: 24px;
-  border: 1px solid blue;
   padding: 12px 18px;
 }
 
@@ -53,4 +77,16 @@
 .message {
   text-align: center;
   margin-bottom: 24px;
+  font-size: 30px;
+}
+
+/* CLASSES UTILITAIRES */
+.winner {
+  color: green;
+  font-size: 30px;
+}
+
+.draw {
+  color: brown;
+  font-size: 30px;
 }
