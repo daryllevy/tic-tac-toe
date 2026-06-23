@@ -1,8 +1,5 @@
 "use strict";
 
-// <-- Etapes pour créer mon Tic Tac Toe : -->
-// 9. créer les boutons start et restart
-
 const boardContainer = document.querySelector(".board");
 const playerSelection = document.querySelector(".selection");
 const message = document.querySelector(".message");
@@ -182,10 +179,8 @@ const gameFlow = () => {
   if (markerPlaced) {
     if (nberOfMarkers >= 5) {
       if (gameBoard.isWinner(activePlayer)) {
-        console.log(
-          `Nous avons un gagnant, le joueur ${activePlayer.marker} a gagné`,
-        );
-        message.textContent = `Game over`;
+        message.textContent = `Game over! ${activePlayer.marker}'s winner`;
+        message.classList.add("winner");
         boardContainer.removeEventListener("click", placeMarkerOnBoard);
         isGameWinner = true;
         activePlayer.addScore();
@@ -203,8 +198,10 @@ const gameFlow = () => {
   }
 
   if (gameBoard.isGameOver()) {
-    console.log("C'est une égalité");
-    message.textContent = `Game over`;
+    let otherPlayer;
+    activePlayer == X ? (otherPlayer = O) : (otherPlayer = X);
+    message.textContent = `DRAW! ${activePlayer.marker}⚔️${otherPlayer.marker} `;
+    message.classList.add("draw");
     boardContainer.removeEventListener("click", placeMarkerOnBoard);
   }
 };
@@ -236,6 +233,8 @@ function resetBoard(e) {
   gameBoard.getBoard().forEach((row) => row.forEach((col) => col.setValue("")));
   displayGame.hideBoard();
   displayGame.displayBoard();
+  message.classList.remove("winner");
+  message.classList.remove("draw");
   message.textContent = "Select a player to start the game";
   boardContainer.removeEventListener("click", placeMarkerOnBoard);
   playerSelection.addEventListener("click", getPlayerSelection, { once: true });
