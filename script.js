@@ -1,14 +1,13 @@
 "use strict";
 
 // <-- Etapes pour créer mon Tic Tac Toe : -->
-
-// 8. Retenir les scores
 // 9. créer les boutons start et restart
 
 const boardContainer = document.querySelector(".board");
 const playerSelection = document.querySelector(".selection");
 const message = document.querySelector(".message");
 const span = document.querySelectorAll("span");
+const btnRestart = document.querySelector("button");
 let row;
 let column;
 
@@ -118,7 +117,7 @@ let O = player("O");
 let activePlayer;
 
 // Objet qui affiche la grille
-const displayGame = (() => {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+const displayGame = (() => {
   const displayBoard = () => {
     const visualBoard = gameBoard
       .getBoard()
@@ -150,26 +149,17 @@ const displayGame = (() => {
   };
 
   // Evènement pour choisir son marker
-  playerSelection.addEventListener(
-    "click",
-    (e) => {
-      let target = e.target;
-
-      if (target.classList == "X" || target.classList == "O") {
-        target.classList == "X" ? (activePlayer = X) : (activePlayer = O);
-        // X.marker == "X" ? (O = player("O")) : (O = player("X"));
-      }
-      console.log(`marker selected = ${target.classList}`);
-    },
-    { once: true },
-  );
+  playerSelection.addEventListener("click", getPlayerSelection, { once: true });
 
   // Evènement pour placer un marker sur la grille
   boardContainer.addEventListener("click", placeMarkerOnBoard);
 
+  // Evènement pour renitialiser la grille
+  btnRestart.addEventListener("click", resetBoard);
+
   return { displayBoard, hideBoard };
 })();
-displayGame.displayBoard(gameBoard.getBoard());
+displayGame.displayBoard();
 
 // Objet qui controle le flux du jeu
 const gameFlow = () => {
@@ -178,7 +168,7 @@ const gameFlow = () => {
 
   let markerPlaced = gameBoard.placeMarker(activePlayer, row, column);
   displayGame.hideBoard();
-  displayGame.displayBoard(gameBoard.getBoard());
+  displayGame.displayBoard();
 
   gameBoard.getBoard().forEach((row) =>
     row.forEach((col) => {
@@ -240,4 +230,26 @@ function placeMarkerOnBoard(e) {
     if (typeof activePlayer == "undefined") return;
     gameFlow();
   }
+}
+
+function resetBoard(e) {
+  gameBoard.getBoard().forEach((row) => row.forEach((col) => col.setValue("")));
+  displayGame.hideBoard();
+  displayGame.displayBoard();
+  message.textContent = "Select a player to start the game";
+  boardContainer.removeEventListener("click", placeMarkerOnBoard);
+  playerSelection.addEventListener("click", getPlayerSelection, { once: true });
+}
+
+function getPlayerSelection(e) {
+  let target = e.target;
+
+  if (target.classList.contains("X") || target.classList.contains("O")) {
+    target.classList == "X" ? (activePlayer = X) : (activePlayer = O);
+    boardContainer.addEventListener("click", placeMarkerOnBoard);
+    return true;
+  } else {
+    return false;
+  }
+  console.log(`marker selected = ${target.classList}`);
 }
